@@ -4,8 +4,11 @@
 
 Game = {};
 
-function love.init()
+function love.load()
 	require('app.init');
+	
+	gsm = Game.GameStateManager:new();
+	gsm:pushState(Game.GameState:new());
 end
 
 function love.update(dt)

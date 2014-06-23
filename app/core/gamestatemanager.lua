@@ -8,7 +8,7 @@ Game.GameStateManager = Game.Class({
 function Game.GameStateManager:__init() end
 
 function Game.GameStateManager:isGameState(state)
-	if (getmetatable(state) == Game.GameState) then
+	if (state:is(Game.GameState)) then
 		return true;
 	else
 		return false;

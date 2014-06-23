@@ -7,3 +7,5 @@ Game.Class = require('lib.30log');
 require('app.core.gamestatemanager');
 require('app.core.gamestate');
 require('app.core.debug');
+
+require('app.game.ingamestate');

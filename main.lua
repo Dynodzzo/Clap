@@ -7,18 +7,18 @@ Game = {};
 function love.load()
 	require('app.init');
 	
-	gsm = Game.GameStateManager:new();
-	gsm:pushState(Game.GameState:new());
+	Game.gsm = Game.GameStateManager:new();
+	Game.gsm:pushState(Game.InGameState:new());
 end
 
 function love.update(dt)
-	
+	Game.gsm:update(dt);
 end
 
 function love.draw()
-	
+	Game.gsm:draw();
 end
 
 function love.keypressed(key, isrepeat)
-	print(key);
+	Gam.gsm:keypressed(key, isrepeat);
 end

@@ -58,10 +58,22 @@ end
 
 function Game.Grid:__init(x, y, w, h, length, height, color)
 	self:setPosition(x, y);
-	self:setSize(w, h);
+	self:setSize(w * length, h * height);
 	self:setCellsSize(w, h);
 	self:setGridSize(length, height);
 	self:setColor(color);
+end
+
+function Game.Grid:getCellFromCoords(x, y)
+	return
+		math.ceil((x - self:getX()) / self.cellsWidth),
+		math.ceil((y - self:getY()) / self.cellsHeight)
+end
+
+function Game.Grid:getCoordsFromCell(x, y)
+	return
+		self:getX() + (self.cellsWidth * (x - 1)),
+		self:getY() + (self.cellsHeight * (y - 1))
 end
 
 function Game.Grid:draw()
@@ -72,7 +84,7 @@ function Game.Grid:draw()
 			self:getX() + (self.cellsWidth * easting),
 			self:getY(),
 			self:getX() + (self.cellsWidth * easting),
-			self:getY() + (self.cellsHeight * self.length)
+			self:getY() + (self.cellsHeight * self.height)
 		);
 	end
 	
@@ -80,7 +92,7 @@ function Game.Grid:draw()
 		love.graphics.line(
 			self:getX(),
 			self:getY() + (self.cellsHeight * northing),
-			self:getX() + (self.cellsWidth * self.height),
+			self:getX() + (self.cellsWidth * self.length),
 			self:getY() + (self.cellsHeight * northing)
 		);
 	end

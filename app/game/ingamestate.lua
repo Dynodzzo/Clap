@@ -10,6 +10,15 @@ function Game.InGameState:init()
 	self.grid = Game.Grid:new(30, 30, 30, 30, 30, 16, Game.Color.green);
 	
 	self.square:setPosition(30, 30);
+	
+	self.testMap = require('app.game.levels.test');
+	self.originCellX = 0;
+	self.testMapSquares = {};
+	
+	for index, square in ipairs(self.testMap) do
+		local squareCellX, squareCellY = self.grid:getCoordsFromCell(self.originCellX + square.x, square.y);
+		table.insert(self.testMapSquares, Game.Square:new(squareCellX, squareCellY, 30, 30, Game.Color.gray));
+	end
 end
 function Game.InGameState:cleanUp() end
 
@@ -32,13 +41,18 @@ function Game.InGameState:update(dt)
 end
 
 function Game.InGameState:draw()
+	for _, mapSquare in ipairs(self.testMapSquares) do
+		if (self.grid:isInside(mapSquare:getX() + 1, mapSquare:getY() + 1)) then
+			mapSquare:draw();
+		end
+	end
 	self.square:draw();
 	self.grid:draw();
 end
 
 function Game.InGameState:mousepressed(x, y, button)
 	if (button == 'l') then
-		print(self.grid:getCoordsFromCell(self.grid:getCellFromCoords(x, y)));
+		print(self.grid:getCellFromCoords(x, y));
 	end
 end
 

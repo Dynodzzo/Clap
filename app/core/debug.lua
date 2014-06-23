@@ -22,9 +22,9 @@ function Game.Debug:print(data, level, key)
 		
 		if (dataType ~= 'table') then
 			if (dataType == 'string') then
-				print(offset .. dataType .. '(' .. string.len(data) .. ')' .. ' - \'' .. data .. '\'');
+				print(offset .. (key and '\'' .. key .. '\' ' or '') .. dataType .. '(' .. string.len(data) .. ')' .. ' - \'' .. data .. '\'');
 			else
-				print(offset .. dataType .. ' - ' .. tostring(data));
+				print(offset .. (key and '\'' .. key .. '\' ' or '') .. dataType .. ' - ' .. tostring(data));
 			end
 		else
 			print(offset .. dataType .. ' - [');

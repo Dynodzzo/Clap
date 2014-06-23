@@ -1,4 +1,5 @@
 -- GameStateManager class.
+-- Manages the different states of the game.
 
 Game.GameStateManager = Game.Class({
 	__name = 'GameStateManager',

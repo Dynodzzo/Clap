@@ -7,7 +7,7 @@ Game.Debug = Game.Class({
 
 function Game.Debug:__init() end
 
-function Game.Debug:print(data, level)
+function Game.Debug:print(data, level, key)
 	local dataType = type(data);
 	local offset = '';
 	level = level or 0;
@@ -27,10 +27,13 @@ function Game.Debug:print(data, level)
 				print(offset .. dataType .. ' - ' .. tostring(data));
 			end
 		else
-			print(offset .. dataType .. '(' .. table.getn(data) .. ')' .. ' - [');
+			print(offset .. dataType .. ' - [');
+			if (key) then
+				print(offset .. (type(key) == 'string' and '\'' .. key .. '\'' or key) .. ' (' .. table.getn(data) .. ')');
+			end
 			
-			for index, value in pairs(data) do
-				self:print(value, level);
+			for key, value in pairs(data) do
+				self:print(value, level, key);
 			end
 			
 			print(offset .. ']');

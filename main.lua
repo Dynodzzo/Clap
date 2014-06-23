@@ -20,5 +20,9 @@ function love.draw()
 end
 
 function love.keypressed(key, isrepeat)
-	Gam.gsm:keypressed(key, isrepeat);
+	Game.gsm:keypressed(key, isrepeat);
+end
+
+function love.mousepressed(x, y, button)
+	Game.gsm:mousepressed(x, y, button);
 end

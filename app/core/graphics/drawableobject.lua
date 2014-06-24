@@ -72,11 +72,11 @@ function Game.DrawableObject:setH(h)
 end
 
 function Game.DrawableObject:setScaleW(w)
-	self.scale.w = w;
+	self.scale.w = w and (w > 0 and w or 0) or 1;
 end
 
 function Game.DrawableObject:setScaleH(h)
-	self.scale.h = h;
+	self.scale.h = h and (h > 0 and h or 0) or 1;
 end
 
 function Game.DrawableObject:setAngle(angle)
@@ -98,8 +98,8 @@ function Game.DrawableObject:setSize(w, h)
 end
 
 function Game.DrawableObject:setScale(w, h)
-	self.scale.w = w or 1;
-	self.scale.h = h or self.scale.w;
+	self.scale.w = w and (w > 0 and w or 0) or 1;
+	self.scale.h = h and (h > 0 and h or 0) or self.scale.w;
 end
 
 function Game.DrawableObject:draw() end

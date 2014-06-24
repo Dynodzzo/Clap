@@ -17,7 +17,7 @@ function Game.EditorState:init(levelName)
 		love.window.getHeight(),
 		Game.Color.transparent
 	);
-	self.camera:setScale(.5);
+	self.camera:setScale(.7);
 	
 	self.oldMouseX = love.mouse.getX();
 	self.oldMouseY = love.mouse.getY();
@@ -28,8 +28,8 @@ function Game.EditorState:init(levelName)
 	
 	self.square:setPosition(30, 30);
 	
-	levelName = string.sub(levelName, 1, -5);
-	self.testMap = require('app.game.levels.' .. levelName);
+	-- levelName = string.sub(levelName, 1, -5);
+	self.testMap = love.filesystem.load('app/game/levels/' .. levelName)();
 	self.originCellX = 10;
 	self.testMapSquares = {};
 	
@@ -80,6 +80,7 @@ function Game.EditorState:draw()
 	love.graphics.print('[m] - Follow mouse', 10, 10);
 	love.graphics.print('[Wheel up/down] - Zoom in/out', 10, 30);
 	love.graphics.print('[Shift + action] - Fast movement', 10, 50);
+	love.graphics.print('[Echap] - Close editor', 10, 70);
 end
 
 function Game.EditorState:keypressed(key, isrepeat)
@@ -87,6 +88,8 @@ function Game.EditorState:keypressed(key, isrepeat)
 		self.followMouse = not self.followMouse;
 	elseif (key == 'lshift') then
 		self.fastMovement = true;
+	elseif (key == 'escape') then
+		self.game:popState();
 	end
 end
 

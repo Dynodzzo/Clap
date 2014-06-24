@@ -89,5 +89,5 @@ function Game.MainMenuState.onLevelLabelStopHover(self, event)
 end
 
 function Game.MainMenuState.onLevelLabelClick(self, currentState)
-	currentState:changeState(Game.EditorState:new(), self.text);
+	currentState.game:pushState(Game.EditorState:new(currentState.game), self.text);
 end

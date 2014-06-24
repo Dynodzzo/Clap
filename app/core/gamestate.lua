@@ -25,7 +25,3 @@ function Game.GameState:keyreleased(key) end
 
 function Game.GameState:mousepressed(x, y, button) end
 function Game.GameState:mousereleased(x, y, button) end
-
-function Game.GameState:changeState(state, ...)
-	self.game:changeState(state, ...);
-end

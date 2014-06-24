@@ -30,7 +30,21 @@ function Game.MainMenuState:init()
 	Game.EventManager:subscribe('onLevelLabelStopHover', self.onLevelLabelStopHover);
 	Game.EventManager:subscribe('onLevelLabelClick', self.onLevelLabelClick);
 end
-function Game.MainMenuState:cleanUp() end
+function Game.MainMenuState:cleanUp()
+	self.oldMouseX = nil;
+	self.oldMouseY = nil;
+	self.title:cleanUp();
+	self.title = nil;
+	self.levelsDirectory = nil;
+	self.levels = nil;
+	for _, levelLabel in ipairs(self.labels) do
+		levelLabel:cleanUp()
+		levelLabel = nil;
+	end
+	self.labels = nil;
+	self.labelsStartPosition = nil;
+	self.labelsSpacing = nil;
+end
 
 function Game.MainMenuState:pause() end
 function Game.MainMenuState:resume() end

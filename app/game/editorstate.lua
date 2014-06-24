@@ -38,7 +38,24 @@ function Game.EditorState:init(levelName)
 		table.insert(self.testMapSquares, Game.Square:new(squareCellX, squareCellY, 30, 30, Game.Color.gray));
 	end
 end
-function Game.EditorState:cleanUp() end
+function Game.EditorState:cleanUp()
+	self.followMouse = nil;
+	self.fastMovement = nil;
+	self.camera = nil;
+	self.oldMouseX = nil;
+	self.oldMouseY = nil;
+	self.square:cleanUp();
+	self.square = nil;
+	self.grid:cleanUp();
+	self.grid = nil;
+	self.testMap = nil;
+	self.originCellX = nil;
+	for _, mapSquare in ipairs(self.testMapSquares) do
+		mapSquare:cleanUp();
+		mapSquare = nil;
+	end
+	self.testMapSquares = nil;
+end
 
 function Game.EditorState:pause() end
 function Game.EditorState:resume() end

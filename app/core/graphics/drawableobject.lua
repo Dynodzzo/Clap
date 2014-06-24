@@ -10,6 +10,14 @@ Game.DrawableObject = Game.GameObject:extends({
 	color = Game.Color.white,
 });
 
+function Game.DrawableObject:cleanUp()
+	self.position = nil;
+	self.size = nil;
+	self.scale = nil;
+	self.angle = nil;
+	self.color = nil;
+end
+
 function Game.DrawableObject:getX()
 	return self.position.x;
 end

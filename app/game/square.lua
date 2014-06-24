@@ -13,6 +13,10 @@ function Game.Square:__init(x, y, w, h, color)
 	self:setColor(color);
 end
 
+function Game.Square:cleanUp()
+	Game.Square.super.cleanUp(self);
+end
+
 function Game.Square:draw()
 	love.graphics.setColor(self.color);
 	love.graphics.rectangle('fill', self:getX(), self:getY(), self:getW(), self:getH());

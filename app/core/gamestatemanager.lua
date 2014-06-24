@@ -62,9 +62,10 @@ function Game.GameStateManager:popState()
 	-- Clean up the current state
 	if (table.getn(self.states) > 0) then
 		local lastStateIndex = table.getn(self.states);
-
+		
 		self.states[lastStateIndex]:cleanUp();
 		self.states[lastStateIndex] = nil;
+		collectgarbage('collect');
 	end
 
 	-- Resume the previous state

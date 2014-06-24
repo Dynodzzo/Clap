@@ -15,8 +15,6 @@ function Game.EventManager:subscribe(name, ...)
 			table.insert(self.events[name], action);
 		end
 	end
-	
-	Game.Debug:print(self.events);
 end
 
 function Game.EventManager:unsubscribe(name, ...)
@@ -29,8 +27,6 @@ function Game.EventManager:unsubscribe(name, ...)
 			end
 		end
 	end
-	Game.Debug:print(self.events);
-	
 end
 
 function Game.EventManager:trigger(name, context, ...)

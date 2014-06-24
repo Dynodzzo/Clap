@@ -8,7 +8,7 @@ function love.load()
 	require('app.init');
 	
 	Game.gsm = Game.GameStateManager:new();
-	Game.gsm:pushState(Game.InGameState:new());
+	Game.gsm:pushState(Game.MainMenuState:new(Game.gsm));
 end
 
 function love.update(dt)

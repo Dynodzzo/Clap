@@ -56,19 +56,19 @@ end
 
 
 function Game.DrawableObject:setX(x)
-	self.position.x = x;
+	self.position.x = x or self.position.x;
 end
 
 function Game.DrawableObject:setY(y)
-	self.position.y = y;
+	self.position.y = y or self.position.y;
 end
 
 function Game.DrawableObject:setW(w)
-	self.size.w = w;
+	self.size.w = w or self.size.w;
 end
 
 function Game.DrawableObject:setH(h)
-	self.size.h = h;
+	self.size.h = h or self.size.h;
 end
 
 function Game.DrawableObject:setScaleW(w)
@@ -80,21 +80,21 @@ function Game.DrawableObject:setScaleH(h)
 end
 
 function Game.DrawableObject:setAngle(angle)
-	self.angle = angle;
+	self.angle = angle or self.angle;
 end
 
 function Game.DrawableObject:setColor(color)
-	self.color = color;
+	self.color = color or self.color;
 end
 
 function Game.DrawableObject:setPosition(x, y)
-	self.position.x = x;
-	self.position.y = y;
+	self.position.x = x or self.position.x;
+	self.position.y = y or self.position.y;
 end
 
 function Game.DrawableObject:setSize(w, h)
-	self.size.w = w;
-	self.size.h = h;
+	self.size.w = w or self.size.w;
+	self.size.h = h or self.size.h;
 end
 
 function Game.DrawableObject:setScale(w, h)

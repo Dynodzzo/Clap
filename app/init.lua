@@ -19,7 +19,11 @@ require('app.core.graphics.gameobject');
 require('app.core.graphics.drawableobject');
 require('app.core.graphics.camera');
 
+require('app.core.graphics.ui.uiobject');
+require('app.core.graphics.ui.label');
 
-require('app.game.ingamestate');
+
+require('app.game.mainmenustate');
+require('app.game.editorstate');
 require('app.game.square');
 require('app.game.grid');

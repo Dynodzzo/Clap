@@ -7,6 +7,10 @@ Game.GameState = Game.Class({
 	game = {},
 });
 
+function Game.GameState:__init(gsm)
+	self.game = gsm;
+end
+
 function Game.GameState:init() end
 function Game.GameState:cleanUp() end
 
@@ -22,6 +26,6 @@ function Game.GameState:keyreleased(key) end
 function Game.GameState:mousepressed(x, y, button) end
 function Game.GameState:mousereleased(x, y, button) end
 
-function Game.GameState:changeState(state)
-	self.game:changeState(state);
+function Game.GameState:changeState(state, ...)
+	self.game:changeState(state, ...);
 end

@@ -27,7 +27,7 @@ function Game.GameStateManager:cleanUp()
 	end
 end
 
-function Game.GameStateManager:changeState(state)
+function Game.GameStateManager:changeState(state, ...)
 	if (self:isGameState(state)) then
 		print(tostring(self.states[table.getn(self.states)]) .. ' - init');
 		
@@ -40,11 +40,11 @@ function Game.GameStateManager:changeState(state)
 		end
 
 		table.insert(self.states, state);
-		self.states[table.getn(self.states)]:init();
+		self.states[table.getn(self.states)]:init(...);
 	end
 end
 
-function Game.GameStateManager:pushState(state)
+function Game.GameStateManager:pushState(state, ...)
 	if (self:isGameState(state)) then
 		-- Pauses the current state
 		if (table.getn(self.states) > 0) then
@@ -54,7 +54,7 @@ function Game.GameStateManager:pushState(state)
 
 		-- Loads the new state
 		table.insert(self.states, state);
-		self.states[table.getn(self.states)]:init();
+		self.states[table.getn(self.states)]:init(...);
 	end
 end
 

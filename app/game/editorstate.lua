@@ -1,8 +1,12 @@
-Game.InGameState = Game.GameState:extends({
-	__name = 'InGameState',
+Game.EditorState = Game.GameState:extends({
+	__name = 'EditorState',
 });
 
-function Game.InGameState:init()
+function Game.EditorState:__init(gsm)
+	Game.EditorState.super.__init(self, gsm);
+end
+
+function Game.EditorState:init(levelName)
 	self.followMouse = false;
 	self.fastMovement = false;
 	
@@ -24,7 +28,8 @@ function Game.InGameState:init()
 	
 	self.square:setPosition(30, 30);
 	
-	self.testMap = require('app.game.levels.test');
+	levelName = string.sub(levelName, 1, -5);
+	self.testMap = require('app.game.levels.' .. levelName);
 	self.originCellX = 10;
 	self.testMapSquares = {};
 	
@@ -33,12 +38,12 @@ function Game.InGameState:init()
 		table.insert(self.testMapSquares, Game.Square:new(squareCellX, squareCellY, 30, 30, Game.Color.gray));
 	end
 end
-function Game.InGameState:cleanUp() end
+function Game.EditorState:cleanUp() end
 
-function Game.InGameState:pause() end
-function Game.InGameState:resume() end
+function Game.EditorState:pause() end
+function Game.EditorState:resume() end
 
-function Game.InGameState:update(dt)
+function Game.EditorState:update(dt)
 	local newMouseX = love.mouse.getX();
 	local newMouseY = love.mouse.getY();
 	newMouseX, newMouseY = self.camera:getCameraCoords(newMouseX, newMouseY);
@@ -57,7 +62,7 @@ function Game.InGameState:update(dt)
 	end
 end
 
-function Game.InGameState:draw()
+function Game.EditorState:draw()
 	self.camera:push();
 	
 	for _, mapSquare in ipairs(self.testMapSquares) do
@@ -77,7 +82,7 @@ function Game.InGameState:draw()
 	love.graphics.print('[Shift + action] - Fast movement', 10, 50);
 end
 
-function Game.InGameState:keypressed(key, isrepeat)
+function Game.EditorState:keypressed(key, isrepeat)
 	if (key == 'm') then
 		self.followMouse = not self.followMouse;
 	elseif (key == 'lshift') then
@@ -85,14 +90,14 @@ function Game.InGameState:keypressed(key, isrepeat)
 	end
 end
 
-function Game.InGameState:keyreleased(key)
+function Game.EditorState:keyreleased(key)
 	if (key == 'lshift') then
 		self.fastMovement = false;
 	end
 end
 			
 
-function Game.InGameState:mousepressed(x, y, button)
+function Game.EditorState:mousepressed(x, y, button)
 	if (button == 'l') then
 		print(self.grid:getCellFromCoords(self.camera:getCameraCoords(x, y)));
 	elseif (button == 'wu') then

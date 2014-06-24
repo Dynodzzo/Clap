@@ -9,13 +9,16 @@ require('app.core.gamestatemanager');
 require('app.core.gamestate');
 require('app.core.debug');
 require('app.core.eventmanager');
+
+require('app.core.graphics.mixins.movable');
+require('app.core.graphics.mixins.clickable');
+
 require('app.core.graphics.color');
 require('app.core.graphics.font');
 require('app.core.graphics.gameobject');
 require('app.core.graphics.drawableobject');
+require('app.core.graphics.camera');
 
-require('app.core.graphics.mixins.movable');
-require('app.core.graphics.mixins.clickable');
 
 require('app.game.ingamestate');
 require('app.game.square');

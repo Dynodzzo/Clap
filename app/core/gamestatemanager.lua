@@ -92,6 +92,12 @@ function Game.GameStateManager:keypressed(key, isrepeat)
 	end
 end
 
+function Game.GameStateManager:keyreleased(key)
+	if (table.getn(self.states) > 0) then
+		self.states[table.getn(self.states)]:keyreleased(key);
+	end
+end
+
 function Game.GameStateManager:mousepressed(x, y, button)
 	if (table.getn(self.states) > 0) then
 		self.states[table.getn(self.states)]:mousepressed(x, y, button);

@@ -10,94 +10,96 @@ Game.DrawableObject = Game.GameObject:extends({
 	color = Game.Color.white,
 });
 
-function Game.GameObject:getX()
+function Game.DrawableObject:getX()
 	return self.position.x;
 end
 
-function Game.GameObject:getY()
+function Game.DrawableObject:getY()
 	return self.position.y;
 end
 
-function Game.GameObject:getW()
+function Game.DrawableObject:getW()
 	return self.size.w;
 end
 
-function Game.GameObject:getH()
+function Game.DrawableObject:getH()
 	return self.size.h;
 end
 
-function Game.GameObject:getScaleW()
+function Game.DrawableObject:getScaleW()
 	return self.scale.w;
 end
 
-function Game.GameObject:getScaleH()
+function Game.DrawableObject:getScaleH()
 	return self.scale.h;
 end
 
-function Game.GameObject:getAngle()
+function Game.DrawableObject:getAngle()
 	return self.angle;
 end
 
-function Game.GameObject:getColor()
+function Game.DrawableObject:getColor()
 	return self.color;
 end
 
-function Game.GameObject:getPosition()
+function Game.DrawableObject:getPosition()
 	return self.position.x, self.position.y;
 end
 
-function Game.GameObject:getSize()
+function Game.DrawableObject:getSize()
 	return self.size.w, self.size.h;
 end
 
-function Game.GameObject:getScale()
+function Game.DrawableObject:getScale()
 	return self.scale.w, self.scale.h;
 end
 
 
-function Game.GameObject:setX(x)
+function Game.DrawableObject:setX(x)
 	self.position.x = x;
 end
 
-function Game.GameObject:setY(y)
+function Game.DrawableObject:setY(y)
 	self.position.y = y;
 end
 
-function Game.GameObject:setW(w)
+function Game.DrawableObject:setW(w)
 	self.size.w = w;
 end
 
-function Game.GameObject:setH(h)
+function Game.DrawableObject:setH(h)
 	self.size.h = h;
 end
 
-function Game.GameObject:setScaleW(w)
+function Game.DrawableObject:setScaleW(w)
 	self.scale.w = w;
 end
 
-function Game.GameObject:setScaleH(h)
+function Game.DrawableObject:setScaleH(h)
 	self.scale.h = h;
 end
 
-function Game.GameObject:setAngle(angle)
+function Game.DrawableObject:setAngle(angle)
 	self.angle = angle;
 end
 
-function Game.GameObject:setColor(color)
+function Game.DrawableObject:setColor(color)
 	self.color = color;
 end
 
-function Game.GameObject:setPosition(x, y)
+function Game.DrawableObject:setPosition(x, y)
 	self.position.x = x;
 	self.position.y = y;
 end
 
-function Game.GameObject:setSize(w, h)
+function Game.DrawableObject:setSize(w, h)
 	self.size.w = w;
 	self.size.h = h;
 end
 
-function Game.GameObject:setScale(w, h)
-	self.scale.w = w;
-	self.scale.h = h;
+function Game.DrawableObject:setScale(w, h)
+	self.scale.w = w or 1;
+	self.scale.h = h or self.scale.w;
 end
+
+function Game.DrawableObject:draw() end

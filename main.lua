@@ -23,6 +23,10 @@ function love.keypressed(key, isrepeat)
 	Game.gsm:keypressed(key, isrepeat);
 end
 
+function love.keyreleased(key)
+	Game.gsm:keyreleased(key);
+end
+
 function love.mousepressed(x, y, button)
 	Game.gsm:mousepressed(x, y, button);
 end

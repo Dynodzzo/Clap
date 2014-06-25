@@ -11,7 +11,7 @@ function Game.EditorState:init(levelName)
 	self.followMouse = false;
 	self.fastMovement = false;
 	
-	self.header = Game.Rectangle:new(0, 0, love.window.getWidth(), 60, Game.Color.customDarkGray);
+	self.header = Game.Rectangle:new(0, 0, love.window.getWidth(), 80, Game.Color.customDarkGray);
 	
 	self.camera = Game.Camera:new(
 		love.window.getWidth() / 2,
@@ -136,9 +136,12 @@ function Game.EditorState:draw()
 	love.graphics.setColor(Game.Color.whiteSmoke);
 	love.graphics.setFont(Game.Font.large);
 	love.graphics.print('[m] - Follow mouse', 10, 10);
-	love.graphics.print('[Wheel up/down] - Zoom in/out', 10, 30);
+	love.graphics.print('[s] - Save the map', 10, 30);
 	love.graphics.print('[Shift + action] - Fast movement', 320, 10);
 	love.graphics.print('[Echap] - Close editor', 320, 30);
+	love.graphics.print('[Wheel up/down] - Zoom in/out', 640, 10);
+	love.graphics.print('[Left click] - Add/remove object', 640, 30);
+	love.graphics.print('[Right click] - Grab the scene', 640, 50);
 end
 
 function Game.EditorState:keypressed(key, isrepeat)
@@ -183,7 +186,7 @@ function Game.EditorState:mousereleased(x, y, button)
 end
 
 function Game.EditorState:updateCellsOriginX(newMouseX, newMouseY)
-	local offset = self.squaresSize;
+	local offset = (self.fastMovement and self.squaresSize * 3 or self.squaresSize);
 	
 	if (newMouseX < self.oldMouseX) then
 		offset = -offset;

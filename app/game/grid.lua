@@ -80,23 +80,26 @@ function Game.Grid:getCoordsFromCell(x, y)
 end
 
 function Game.Grid:draw()
-	love.graphics.setColor(self.color);
-	
-	for easting = 0, self.length do
-		love.graphics.line(
-			self:getX() + (self.cellsWidth * easting),
-			self:getY(),
-			self:getX() + (self.cellsWidth * easting),
-			self:getY() + (self.cellsHeight * self.height)
-		);
-	end
-	
-	for northing = 0, self.height do
-		love.graphics.line(
-			self:getX(),
-			self:getY() + (self.cellsHeight * northing),
-			self:getX() + (self.cellsWidth * self.length),
-			self:getY() + (self.cellsHeight * northing)
-		);
+	if (self.visible) then
+		love.graphics.setColor(self.color);
+		love.graphics.setLineWidth(self.thickness);
+		
+		for easting = 0, self.length do
+			love.graphics.line(
+				self:getX() + (self.cellsWidth * easting),
+				self:getY(),
+				self:getX() + (self.cellsWidth * easting),
+				self:getY() + (self.cellsHeight * self.height)
+			);
+		end
+		
+		for northing = 0, self.height do
+			love.graphics.line(
+				self:getX(),
+				self:getY() + (self.cellsHeight * northing),
+				self:getX() + (self.cellsWidth * self.length),
+				self:getY() + (self.cellsHeight * northing)
+			);
+		end
 	end
 end

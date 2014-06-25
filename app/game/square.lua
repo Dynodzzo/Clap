@@ -18,6 +18,9 @@ function Game.Square:cleanUp()
 end
 
 function Game.Square:draw()
-	love.graphics.setColor(self.color);
-	love.graphics.rectangle('fill', self:getX(), self:getY(), self:getW(), self:getH());
+	if (self.visible) then
+		love.graphics.setColor(self.color);
+		love.graphics.setLineWidth(self.thickness);
+		love.graphics.rectangle('fill', self:getX(), self:getY(), self:getW(), self:getH());
+	end
 end

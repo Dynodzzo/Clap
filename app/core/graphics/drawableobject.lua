@@ -8,6 +8,8 @@ Game.DrawableObject = Game.GameObject:extends({
 	scale = {w = 1, h = 1},
 	angle = 0,
 	color = Game.Color.white,
+	thickness = 1,
+	visible = true,
 });
 
 function Game.DrawableObject:cleanUp()
@@ -62,6 +64,10 @@ function Game.DrawableObject:getScale()
 	return self.scale.w, self.scale.h;
 end
 
+function Game.DrawableObject:getThickness()
+	return self.thickness
+end
+
 
 function Game.DrawableObject:setX(x)
 	self.position.x = x or self.position.x;
@@ -108,6 +114,10 @@ end
 function Game.DrawableObject:setScale(w, h)
 	self.scale.w = w and (w > 0 and w or 0) or 1;
 	self.scale.h = h and (h > 0 and h or 0) or self.scale.w;
+end
+
+function Game.DrawableObject:setThickness(thickness)
+	self.thickness = thickness or self.thickness;
 end
 
 function Game.DrawableObject:draw() end

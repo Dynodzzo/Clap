@@ -44,6 +44,9 @@ function Game.MainMenuState:cleanUp()
 	self.labels = nil;
 	self.labelsStartPosition = nil;
 	self.labelsSpacing = nil;
+	Game.EventManager:unsubscribe('onLevelLabelHover', self.onLevelLabelHover);
+	Game.EventManager:unsubscribe('onLevelLabelStopHover', self.onLevelLabelStopHover);
+	Game.EventManager:unsubscribe('onLevelLabelClick', self.onLevelLabelClick);
 end
 
 function Game.MainMenuState:pause() end

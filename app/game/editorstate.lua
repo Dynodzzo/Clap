@@ -29,14 +29,23 @@ function Game.EditorState:init(levelName)
 	self.square:setPosition(30, 30);
 	
 	-- levelName = string.sub(levelName, 1, -5);
-	self.testMap = love.filesystem.load('app/game/levels/' .. levelName)();
+	self.levelsDirectory = 'app/game/levels/';
+	self.saveLevelsDirectory = 'levels/';
+	self.levelName = levelName;
+	self.editedMap = love.filesystem.load(self.levelsDirectory .. self.levelName)();
 	self.originCellX = 10;
-	self.testMapSquares = {};
+	self.editedMapSquares = {};
 	
-	for index, square in ipairs(self.testMap) do
+	for index, square in ipairs(self.editedMap) do
 		local squareCellX, squareCellY = self.grid:getCoordsFromCell(self.originCellX + square.x, square.y);
-		table.insert(self.testMapSquares, Game.Square:new(squareCellX, squareCellY, 30, 30, Game.Color.gray));
+		table.insert(self.editedMapSquares, Game.Square:new(squareCellX, squareCellY, 30, 30, Game.Color.gray));
 	end
+	
+	local originLineX = self.grid:getCoordsFromCell(self.originCellX, 1);
+	self.originLine = Game.Line:new(originLineX, 30, originLineX, 30 + self.grid:getH(), 2);
+	
+	Game.EventManager:subscribe('onGridCellClick', self.onGridCellClick);
+	Game.EventManager:subscribe('onSaveMapData', self.onSaveMapData);
 end
 function Game.EditorState:cleanUp()
 	self.followMouse = nil;
@@ -48,13 +57,19 @@ function Game.EditorState:cleanUp()
 	self.square = nil;
 	self.grid:cleanUp();
 	self.grid = nil;
-	self.testMap = nil;
+	self.levelsDirectory = nil;
+	self.saveLevelsDirectory = nil;
+	self.levelName = nil;
+	self.editedMap = nil;
 	self.originCellX = nil;
-	for _, mapSquare in ipairs(self.testMapSquares) do
+	for _, mapSquare in ipairs(self.editedMapSquares) do
 		mapSquare:cleanUp();
 		mapSquare = nil;
 	end
-	self.testMapSquares = nil;
+	self.editedMapSquares = nil;
+	Game.EventManager:unsubscribe('onGridCellClick', self.onGridCellClick);
+	Game.EventManager:unsubscribe('onSaveMapData', self.onSaveMapData);
+	
 end
 
 function Game.EditorState:pause() end
@@ -69,10 +84,11 @@ function Game.EditorState:update(dt)
 		if (self.followMouse) then
 			self.camera:lookAt(love.mouse.getX(), love.mouse.getY());
 		end
+		
 		self.oldMouseX = newMouseX;
 		self.oldMouseY = newMouseY;
+		
 		if (self.grid:isInside(newMouseX, newMouseY)) then
-			
 			local selectedCellX, selectedCellY = self.grid:getCellFromCoords(newMouseX, newMouseY);
 			self.square:setPosition(self.grid:getCoordsFromCell(selectedCellX, selectedCellY));
 		end
@@ -82,13 +98,14 @@ end
 function Game.EditorState:draw()
 	self.camera:push();
 	
-	for _, mapSquare in ipairs(self.testMapSquares) do
+	for _, mapSquare in ipairs(self.editedMapSquares) do
 		if (self.grid:isInside(mapSquare:getX() + 1, mapSquare:getY() + 1)) then
 			mapSquare:draw();
 		end
 	end
 	self.square:draw();
 	self.grid:draw();
+	self.originLine:draw();
 	
 	self.camera:pop();
 	
@@ -103,6 +120,8 @@ end
 function Game.EditorState:keypressed(key, isrepeat)
 	if (key == 'm') then
 		self.followMouse = not self.followMouse;
+	elseif (key == 's') then
+		Game.EventManager:trigger('onSaveMapData', self);
 	elseif (key == 'lshift') then
 		self.fastMovement = true;
 	elseif (key == 'escape') then
@@ -115,11 +134,15 @@ function Game.EditorState:keyreleased(key)
 		self.fastMovement = false;
 	end
 end
-			
 
 function Game.EditorState:mousepressed(x, y, button)
 	if (button == 'l') then
-		print(self.grid:getCellFromCoords(self.camera:getCameraCoords(x, y)));
+		local cameraX, cameraY = self.camera:getCameraCoords(x, y);
+		
+		if (self.grid:isInside(cameraX, cameraY)) then
+			Game.EventManager:trigger('onGridCellClick', self, {x = cameraX, y = cameraY});
+			-- print(self.grid:getCellFromCoords(self.camera:getCameraCoords(x, y)));
+		end
 	elseif (button == 'wu') then
 		self.camera:setScale(self.camera:getScale() + (self.fastMovement and .3 or .05));
 	elseif (button == 'wd') then
@@ -127,3 +150,34 @@ function Game.EditorState:mousepressed(x, y, button)
 	end
 end
 
+function Game.EditorState.onGridCellClick(self, event)
+	local gridCellX, gridCellY = self.grid:getCellFromCoords(event.x, event.y);
+	gridCellX = gridCellX - self.originCellX;
+	local squareCellX, squareCellY = self.grid:getCoordsFromCell(self.originCellX + gridCellX, gridCellY);
+	local squareIndex = 0;
+	local isAlreadySquare = false;
+	
+	for index, square in ipairs(self.editedMap) do
+		if (square.x == gridCellX and square.y == gridCellY) then
+			isAlreadySquare = true;
+			squareIndex = index;
+		end
+	end
+	
+	if (isAlreadySquare) then
+		table.remove(self.editedMap, squareIndex);
+		self.editedMapSquares[squareIndex]:cleanUp();
+		table.remove(self.editedMapSquares, squareIndex);
+	else
+		-- Map data
+		table.insert(self.editedMap, {x = gridCellX, y = gridCellY});
+		
+		-- Display data
+		table.insert(self.editedMapSquares, Game.Square:new(squareCellX, squareCellY, 30, 30, Game.Color.gray));
+	end
+end
+
+function Game.EditorState.onSaveMapData(self, event)
+	Game.Debug:print(self.saveLevelsDirectory .. '_' .. self.levelName);
+	love.filesystem.write(self.saveLevelsDirectory .. '_' .. self.levelName, Game.Serialize(self.editedMap));
+end

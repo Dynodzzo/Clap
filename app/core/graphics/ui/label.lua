@@ -19,9 +19,11 @@ function Game.Label:setText(text)
 end
 
 function Game.Label:draw()
-	love.graphics.setFont(self.font);
-	love.graphics.setColor(self.backgroundColor);
-	love.graphics.rectangle('fill', self:getX(), self:getY(), self:getTextWidth(), self:getTextHeight());
-	love.graphics.setColor(self.color);
-	love.graphics.print(self.text, self:getX(), self:getY());
+	if (self.visible) then
+		love.graphics.setFont(self.font);
+		love.graphics.setColor(self.backgroundColor);
+		love.graphics.rectangle('fill', self:getX(), self:getY(), self:getTextWidth(), self:getTextHeight());
+		love.graphics.setColor(self.color);
+		love.graphics.print(self.text, self:getX(), self:getY());
+	end
 end

@@ -29,6 +29,6 @@ require('app.core.graphics.ui.label');
 
 require('app.game.mainmenustate');
 require('app.game.editorstate');
-require('app.game.square');
+require('app.game.rectangle');
 require('app.game.line');
 require('app.game.grid');

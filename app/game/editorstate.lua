@@ -7,8 +7,11 @@ function Game.EditorState:__init(gsm)
 end
 
 function Game.EditorState:init(levelName)
+	self.grabbed = false;
 	self.followMouse = false;
 	self.fastMovement = false;
+	
+	self.header = Game.Rectangle:new(0, 0, love.window.getWidth(), 60, Game.Color.customDarkGray);
 	
 	self.camera = Game.Camera:new(
 		love.window.getWidth() / 2,
@@ -23,13 +26,16 @@ function Game.EditorState:init(levelName)
 	self.oldMouseY = love.mouse.getY();
 	self.oldMouseX, self.oldMouseY = self.camera:getCameraCoords(self.oldMouseX, self.oldMouseY);
 	
-	self.square = Game.Square:new(0, 0, 30, 30, Game.Color.blue);
-	self.grid = Game.Grid:new(30, 30, 30, 30, 30, 16, Game.Color.green);
+	self.squaresSize = 30;
+	
+	self.square = Game.Rectangle:new(0, 0, self.squaresSize, self.squaresSize, Game.Color.darkStateBlue);
+	self.grid = Game.Grid:new(30, 30, self.squaresSize, self.squaresSize, 30, 16, Game.Color.customDarkGray);
 	
 	self.square:setPosition(30, 30);
 	
 	-- levelName = string.sub(levelName, 1, -5);
-	self.levelsDirectory = 'app/game/levels/';
+	-- self.levelsDirectory = 'app/game/levels/';
+	self.levelsDirectory = 'levels/';
 	self.saveLevelsDirectory = 'levels/';
 	self.levelName = levelName;
 	self.editedMap = love.filesystem.load(self.levelsDirectory .. self.levelName)();
@@ -38,11 +44,12 @@ function Game.EditorState:init(levelName)
 	
 	for index, square in ipairs(self.editedMap) do
 		local squareCellX, squareCellY = self.grid:getCoordsFromCell(self.originCellX + square.x, square.y);
-		table.insert(self.editedMapSquares, Game.Square:new(squareCellX, squareCellY, 30, 30, Game.Color.gray));
+		table.insert(self.editedMapSquares, Game.Rectangle:new(squareCellX, squareCellY, 30, 30, Game.Color.darkGray));
 	end
 	
 	local originLineX = self.grid:getCoordsFromCell(self.originCellX, 1);
-	self.originLine = Game.Line:new(originLineX, 30, originLineX, 30 + self.grid:getH(), 2);
+	self.originLine = Game.Rectangle:new(originLineX, 30, 2, self.grid:getH(), Game.Color.red);
+	self.grabOffsetX = 0;
 	
 	Game.EventManager:subscribe('onGridCellClick', self.onGridCellClick);
 	Game.EventManager:subscribe('onSaveMapData', self.onSaveMapData);
@@ -67,6 +74,9 @@ function Game.EditorState:cleanUp()
 		mapSquare = nil;
 	end
 	self.editedMapSquares = nil;
+	self.originLine:cleanUp();
+	self.originLine = nil;
+	self.grabOffsetX = nil;
 	Game.EventManager:unsubscribe('onGridCellClick', self.onGridCellClick);
 	Game.EventManager:unsubscribe('onSaveMapData', self.onSaveMapData);
 	
@@ -85,17 +95,27 @@ function Game.EditorState:update(dt)
 			self.camera:lookAt(love.mouse.getX(), love.mouse.getY());
 		end
 		
-		self.oldMouseX = newMouseX;
-		self.oldMouseY = newMouseY;
+		if (self.grabbed) then
+			self.grabOffsetX = self.grabOffsetX + (newMouseX - self.oldMouseX);
+			if (math.abs(self.grabOffsetX) >= self.squaresSize) then
+				self:updateCellsOriginX(newMouseX, newMouseY);
+				self.grabOffsetX = 0;
+			end
+		end
 		
 		if (self.grid:isInside(newMouseX, newMouseY)) then
 			local selectedCellX, selectedCellY = self.grid:getCellFromCoords(newMouseX, newMouseY);
 			self.square:setPosition(self.grid:getCoordsFromCell(selectedCellX, selectedCellY));
 		end
+		
+		self.oldMouseX = newMouseX;
+		self.oldMouseY = newMouseY;
 	end
 end
 
 function Game.EditorState:draw()
+	love.graphics.setBackgroundColor(Game.Color.whiteSmoke);
+	
 	self.camera:push();
 	
 	for _, mapSquare in ipairs(self.editedMapSquares) do
@@ -105,16 +125,20 @@ function Game.EditorState:draw()
 	end
 	self.square:draw();
 	self.grid:draw();
-	self.originLine:draw();
+	
+	if (self.grid:isInside(self.originLine:getX() + 1, self.originLine:getY() + 1)) then
+		self.originLine:draw();
+	end
 	
 	self.camera:pop();
 	
-	love.graphics.setColor(Game.Color.white);
+	self.header:draw();
+	love.graphics.setColor(Game.Color.whiteSmoke);
 	love.graphics.setFont(Game.Font.large);
 	love.graphics.print('[m] - Follow mouse', 10, 10);
 	love.graphics.print('[Wheel up/down] - Zoom in/out', 10, 30);
-	love.graphics.print('[Shift + action] - Fast movement', 10, 50);
-	love.graphics.print('[Echap] - Close editor', 10, 70);
+	love.graphics.print('[Shift + action] - Fast movement', 320, 10);
+	love.graphics.print('[Echap] - Close editor', 320, 30);
 end
 
 function Game.EditorState:keypressed(key, isrepeat)
@@ -143,11 +167,34 @@ function Game.EditorState:mousepressed(x, y, button)
 			Game.EventManager:trigger('onGridCellClick', self, {x = cameraX, y = cameraY});
 			-- print(self.grid:getCellFromCoords(self.camera:getCameraCoords(x, y)));
 		end
+	elseif (button == 'r') then
+		self.grabbed = true;
 	elseif (button == 'wu') then
 		self.camera:setScale(self.camera:getScale() + (self.fastMovement and .3 or .05));
 	elseif (button == 'wd') then
 		self.camera:setScale(self.camera:getScale() - (self.fastMovement and .3 or .05));
 	end
+end
+
+function Game.EditorState:mousereleased(x, y, button)
+	if (button == 'r') then
+		self.grabbed = false;
+	end
+end
+
+function Game.EditorState:updateCellsOriginX(newMouseX, newMouseY)
+	local offset = self.squaresSize;
+	
+	if (newMouseX < self.oldMouseX) then
+		offset = -offset;
+	end
+	
+	for _, mapSquare in ipairs(self.editedMapSquares) do
+		mapSquare:moveX(offset);
+	end
+	
+	self.originLine:moveX(offset);
+	self.originCellX = self.originCellX + offset / self.squaresSize;
 end
 
 function Game.EditorState.onGridCellClick(self, event)
@@ -173,11 +220,11 @@ function Game.EditorState.onGridCellClick(self, event)
 		table.insert(self.editedMap, {x = gridCellX, y = gridCellY});
 		
 		-- Display data
-		table.insert(self.editedMapSquares, Game.Square:new(squareCellX, squareCellY, 30, 30, Game.Color.gray));
+		table.insert(self.editedMapSquares, Game.Rectangle:new(squareCellX, squareCellY, 30, 30, Game.Color.darkGray));
 	end
 end
 
 function Game.EditorState.onSaveMapData(self, event)
-	Game.Debug:print(self.saveLevelsDirectory .. '_' .. self.levelName);
-	love.filesystem.write(self.saveLevelsDirectory .. '_' .. self.levelName, Game.Serialize(self.editedMap));
+	Game.Debug:print('Map saved to : ' .. self.saveLevelsDirectory .. '_' .. self.levelName);
+	love.filesystem.write(self.saveLevelsDirectory .. self.levelName, Game.Serialize(self.editedMap));
 end

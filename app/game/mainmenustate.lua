@@ -10,9 +10,10 @@ function Game.MainMenuState:init()
 	self.oldMouseX = love.mouse.getX();
 	self.oldMouseY = love.mouse.getY();
 	
-	self.title = Game.Label:new('Levels :', 10, 10, Game.Color.red, Game.Font.large);
+	self.title = Game.Label:new('Levels :', 10, 10, Game.Color.darkRed, Game.Font.large);
 	
-	self.levelsDirectory = 'app/game/levels';
+	-- self.levelsDirectory = 'app/game/levels';
+	self.levelsDirectory = 'levels/';
 	self.levels = love.filesystem.getDirectoryItems(self.levelsDirectory);
 	self.labels = {};
 	self.labelsStartPosition = {x = 25, y = 40};
@@ -22,7 +23,8 @@ function Game.MainMenuState:init()
 		table.insert(self.labels, Game.Label:new(
 			levelName,
 			self.labelsStartPosition.x,
-			self.labelsStartPosition.y + self.labelsSpacing * (index - 1)
+			self.labelsStartPosition.y + self.labelsSpacing * (index - 1),
+			Game.Color.customDarkGray
 		));
 	end
 	
@@ -71,6 +73,7 @@ function Game.MainMenuState:update(dt)
 end
 
 function Game.MainMenuState:draw()
+	love.graphics.setBackgroundColor(Game.Color.whiteSmoke);
 	self.title:draw();
 	
 	for _, levelLabel in ipairs(self.labels) do
@@ -98,11 +101,11 @@ function Game.MainMenuState:mousepressed(x, y, button)
 end
 
 function Game.MainMenuState.onLevelLabelHover(self, event)
-	self.backgroundColor = Game.Color.blue;
+	self.backgroundColor = Game.Color.darkGray;
 end
 
 function Game.MainMenuState.onLevelLabelStopHover(self, event)
-	self.backgroundColor = Game.Color.black;
+	self.backgroundColor = Game.Color.none;
 end
 
 function Game.MainMenuState.onLevelLabelClick(self, currentState)

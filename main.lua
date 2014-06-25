@@ -30,3 +30,7 @@ end
 function love.mousepressed(x, y, button)
 	Game.gsm:mousepressed(x, y, button);
 end
+
+function love.mousereleased(x, y, button)
+	Game.gsm:mousereleased(x, y, button);
+end

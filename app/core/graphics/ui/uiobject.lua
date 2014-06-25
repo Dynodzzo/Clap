@@ -5,7 +5,7 @@ Game.UIObject = Game.DrawableObject:extends({
 	__name = 'UIObject',
 	text = 'Undefined UIObject',
 	font = Game.Font.normal,
-	backgroundColor = Game.Color.black,
+	backgroundColor = Game.Color.none,
 });
 
 Game.UIObject:include(Game.Clickable);

@@ -38,13 +38,15 @@ function Game.EditorState:init(levelName)
 	self.levelsDirectory = 'levels/';
 	self.saveLevelsDirectory = 'levels/';
 	self.levelName = levelName;
-	self.editedMap = love.filesystem.load(self.levelsDirectory .. self.levelName)();
 	self.originCellX = 10;
+	self.editedMap = love.filesystem.load(self.levelsDirectory .. self.levelName)() or {};
 	self.editedMapSquares = {};
 	
-	for index, square in ipairs(self.editedMap) do
-		local squareCellX, squareCellY = self.grid:getCoordsFromCell(self.originCellX + square.x, square.y);
-		table.insert(self.editedMapSquares, Game.Rectangle:new(squareCellX, squareCellY, 30, 30, Game.Color.darkGray));
+	if (table.getn(self.editedMap) > 0) then
+		for index, square in ipairs(self.editedMap) do
+			local squareCellX, squareCellY = self.grid:getCoordsFromCell(self.originCellX + square.x, square.y);
+			table.insert(self.editedMapSquares, Game.Rectangle:new(squareCellX, squareCellY, 30, 30, Game.Color.darkGray));
+		end
 	end
 	
 	local originLineX = self.grid:getCoordsFromCell(self.originCellX, 1);

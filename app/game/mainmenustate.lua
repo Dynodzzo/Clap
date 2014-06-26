@@ -19,19 +19,19 @@ function Game.MainMenuState:init()
 	self.labelsStartPosition = {x = 25, y = 40};
 	self.labelsSpacing = 20;
 	
-	for index, levelName in ipairs(self.levels) do
-		table.insert(self.labels, Game.Label:new(
-			levelName,
-			self.labelsStartPosition.x,
-			self.labelsStartPosition.y + self.labelsSpacing * (index - 1),
-			Game.Color.customDarkGray
-		));
-	end
+	self:reload();
+	
+	self.newMapWindow = Game.MessageBox:new('Choose a name for the map', 120, 40, true);
+	self.newMapWindow.validate = function(mapName)
+		self:onNewMapWindowValidate(mapName)
+	end;
 	
 	Game.EventManager:subscribe('onLevelLabelHover', self.onLevelLabelHover);
 	Game.EventManager:subscribe('onLevelLabelStopHover', self.onLevelLabelStopHover);
 	Game.EventManager:subscribe('onLevelLabelClick', self.onLevelLabelClick);
+	Game.EventManager:subscribe('onNewMapWindowValidate', self.onNewMapWindowValidate);
 end
+
 function Game.MainMenuState:cleanUp()
 	self.oldMouseX = nil;
 	self.oldMouseY = nil;
@@ -79,24 +79,56 @@ function Game.MainMenuState:draw()
 	for _, levelLabel in ipairs(self.labels) do
 		levelLabel:draw();
 	end
+	
+	self.newMapWindow:draw();
 end
 
 function Game.MainMenuState:keypressed(key, isrepeat)
-	
+	self.newMapWindow:keypressed(key, isrepeat);
 end
 
 function Game.MainMenuState:keyreleased(key)
-	
+	self.newMapWindow:keyreleased(x, y, button);
 end
 			
-
 function Game.MainMenuState:mousepressed(x, y, button)
+	self.newMapWindow:mousepressed(x, y, button);
+end
+
+function Game.MainMenuState:mousereleased(x, y, button)
 	if (button == 'l') then
 		for _, levelLabel in ipairs(self.labels) do
 			if (levelLabel:isInside(x, y)) then
 				Game.EventManager:trigger('onLevelLabelClick', levelLabel, self);
 			end
 		end
+	end
+	
+	self.newMapWindow:mousereleased(x, y, button);
+end
+
+function Game.MainMenuState:textinput(text)
+	self.newMapWindow:textinput(text);
+end
+
+function Game.MainMenuState:reload()
+	self.labels = {};
+	self.levels = love.filesystem.getDirectoryItems(self.levelsDirectory);
+	
+	table.insert(self.labels, Game.Label:new(
+		'New map',
+		self.labelsStartPosition.x,
+		self.labelsStartPosition.y,
+		Game.Color.customDarkGray
+	));
+	
+	for index, levelName in ipairs(self.levels) do
+		table.insert(self.labels, Game.Label:new(
+			levelName,
+			self.labelsStartPosition.x,
+			self.labelsStartPosition.y + self.labelsSpacing * index,
+			Game.Color.customDarkGray
+		));
 	end
 end
 
@@ -109,5 +141,21 @@ function Game.MainMenuState.onLevelLabelStopHover(self, event)
 end
 
 function Game.MainMenuState.onLevelLabelClick(self, currentState)
-	currentState.game:pushState(Game.EditorState:new(currentState.game), self.text);
+	if (self.text == 'New map') then
+		currentState.newMapWindow:show();
+	else
+		currentState.game:pushState(Game.EditorState:new(currentState.game), self.text);
+	end
+end
+
+function Game.MainMenuState:onNewMapWindowValidate(mapName)
+	if (mapName ~= '') then
+		self.newMapWindow:hide();
+		print('Map created to : ' .. self.levelsDirectory .. mapName .. '.lev')
+		local fileCreated = love.filesystem.write(self.levelsDirectory .. mapName .. '.lev', '');
+		
+		if (fileCreated) then
+			self:reload();
+		end
+	end
 end

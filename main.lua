@@ -34,3 +34,7 @@ end
 function love.mousereleased(x, y, button)
 	Game.gsm:mousereleased(x, y, button);
 end
+
+function love.textinput(text)
+	Game.gsm:textinput(text);
+end

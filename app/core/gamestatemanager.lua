@@ -110,3 +110,9 @@ function Game.GameStateManager:mousereleased(x, y, button)
 		self.states[table.getn(self.states)]:mousereleased(x, y, button);
 	end
 end
+
+function Game.GameStateManager:textinput(text)
+	if (table.getn(self.states) > 0) then
+		self.states[table.getn(self.states)]:textinput(text);
+	end
+end

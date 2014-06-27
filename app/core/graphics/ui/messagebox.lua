@@ -1,7 +1,7 @@
 -- MessageBox class.
 -- Represents a message box.
 
-Game.MessageBox = Game.UIObject:extends({
+Game.MessageBox = Game.Frame:extends({
 	__name = 'MessageBox',
 	text = 'Undefined MessageBox',
 	size = {w = 300, h = 120},
@@ -9,9 +9,9 @@ Game.MessageBox = Game.UIObject:extends({
 	hasTextInput = false,
 	backgroundColor = Game.Color.gray,
 	textOffset = {x = 10, y = 10},
-	textInput = Game.TextBox:new(10, 30),
-	validationButton = Game.Button:new('OK', 10, 60),
-	cancelButton = Game.Button:new('Cancel', 80, 60),
+	textInput = Game.TextBox:new(10, 40),
+	validationButton = Game.Button:new('OK', 10, 70),
+	cancelButton = Game.Button:new('Cancel', 80, 70),
 	validate = function() end,
 	cancel = function() end,
 });
@@ -35,23 +35,8 @@ function Game.MessageBox:__init(text, x, y, hasTextInput)
 end
 
 function Game.MessageBox:draw()
+	Game.MessageBox.super.draw(self);
 	if (self.visible) then
-		love.graphics.setFont(self.font);
-		if (self.focused) then
-			love.graphics.setColor(self.borderColor);
-			love.graphics.rectangle(
-				'fill',
-				self:getX() - self.borderSize,
-				self:getY() - self.borderSize,
-				self:getW() + self.borderSize * 2,
-				self:getH() + self.borderSize * 2
-			);
-		end
-		love.graphics.setColor(self.backgroundColor);
-		love.graphics.rectangle('fill', self:getX(), self:getY(), self:getW(), self:getH());
-		love.graphics.setColor(self.color);
-		love.graphics.print(self.text, self:getX() + self.textOffset.x, self:getY() + self.textOffset.y);
-		
 		if (self.hasTextInput) then
 			self.textInput:draw();
 		end
@@ -59,6 +44,10 @@ function Game.MessageBox:draw()
 		self.validationButton:draw();
 		self.cancelButton:draw();
 	end
+end
+
+function Game.MessageBox:update(dt)
+	-- Game.MessageBox.super.update(self, dt);
 end
 
 function Game.MessageBox:keypressed(key, isrepeat)
@@ -75,6 +64,8 @@ function Game.MessageBox:keyreleased(key)
 end
 
 function Game.MessageBox:mousepressed(x, y, button)
+	Game.MessageBox.super.mousepressed(self, x, y, button);
+	
 	if (self.visible) then
 		if (button == 'l') then
 			if (self:isInside(x, y)) then
@@ -91,6 +82,8 @@ function Game.MessageBox:mousepressed(x, y, button)
 end
 
 function Game.MessageBox:mousereleased(x, y, button)
+	Game.MessageBox.super.mousereleased(self, x, y, button);
+	
 	if (self.visible) then
 		self.validationButton:mousereleased(x, y, button);
 		self.cancelButton:mousereleased(x, y, button);

@@ -17,6 +17,9 @@ end
 
 function love.draw()
 	Game.gsm:draw();
+	love.graphics.setFont(Game.Font.normal);
+	love.graphics.setColor(Game.Color.black);
+	love.graphics.print(love.timer.getFPS(), 10, 510);
 end
 
 function love.keypressed(key, isrepeat)

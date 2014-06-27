@@ -13,7 +13,7 @@ function Game.MainMenuState:init()
 	self.title = Game.Label:new('Levels :', 10, 10, Game.Color.darkRed, Game.Font.large);
 	
 	-- self.levelsDirectory = 'app/game/levels';
-	self.levelsDirectory = 'levels/';
+	self.levelsDirectory = 'levels';
 	self.levels = love.filesystem.getDirectoryItems(self.levelsDirectory);
 	self.labels = {};
 	self.labelsStartPosition = {x = 25, y = 40};
@@ -70,6 +70,8 @@ function Game.MainMenuState:update(dt)
 		self.oldMouseX = mouseX;
 		self.oldMouseY = mouseY;
 	end
+	
+	self.newMapWindow:update(dt);
 end
 
 function Game.MainMenuState:draw()
@@ -151,11 +153,21 @@ end
 function Game.MainMenuState:onNewMapWindowValidate(mapName)
 	if (mapName ~= '') then
 		self.newMapWindow:hide();
-		print('Map created to : ' .. self.levelsDirectory .. mapName .. '.lev')
-		local fileCreated = love.filesystem.write(self.levelsDirectory .. mapName .. '.lev', '');
 		
-		if (fileCreated) then
-			self:reload();
+		local directoryCreated = true;
+		local fileCreated = false;
+		
+		if (not love.filesystem.exists(self.levelsDirectory)) then
+			directoryCreated = love.filesystem.createDirectory(self.levelsDirectory);
+		end
+		
+		if (directoryCreated) then
+			print('Directory created : ' .. self.levelsDirectory .. '/');
+			fileCreated = love.filesystem.write(self.levelsDirectory .. '/' .. mapName .. '.lev', '');
+			if (fileCreated) then
+				print('Map created to : ' .. self.levelsDirectory .. '/' .. mapName .. '.lev')
+				self:reload();
+			end
 		end
 	end
 end

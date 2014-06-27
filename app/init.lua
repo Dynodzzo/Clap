@@ -24,6 +24,7 @@ require('app.core.graphics.drawableobject');
 require('app.core.graphics.camera');
 
 require('app.core.graphics.ui.uiobject');
+require('app.core.graphics.ui.frame');
 require('app.core.graphics.ui.label');
 require('app.core.graphics.ui.textbox');
 require('app.core.graphics.ui.button');
@@ -33,5 +34,6 @@ require('app.core.graphics.ui.messagebox');
 require('app.game.mainmenustate');
 require('app.game.editorstate');
 require('app.game.rectangle');
+require('app.game.triangle');
 require('app.game.line');
 require('app.game.grid');
